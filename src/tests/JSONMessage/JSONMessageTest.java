@@ -29,6 +29,7 @@ class JSONMessageTest {
 
         objectMapper.registerModule(module);
 
+        // Create an instance of JSONMessage and set parameters
         JSONMessage message = new JSONMessage();
         message.setContentCode(EnumContentCode.NOTDECLARED);
         message.setFolio("folio");
@@ -37,17 +38,20 @@ class JSONMessageTest {
         message.setMessage("This is a message");
 
         String jsonMessage = objectMapper.writeValueAsString(message);
+        String expectedJSON = getJSONFromFile("AllParametersSet.json");
 
-        String entireFileText = "";
+        JSONAssert.assertEquals(expectedJSON, jsonMessage, false);
+    }
+
+    private String getJSONFromFile(String filename) {
+        String JSONText = "";
         try {
-            URL path = JSONMessageTest.class.getResource("AllParametersSet.json");
-            entireFileText = new Scanner(new File(path.getFile()))
+            URL path = JSONMessageTest.class.getResource(filename);
+            JSONText = new Scanner(new File(path.getFile()))
                     .useDelimiter("\\A").next();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        JSONAssert.assertEquals(entireFileText, jsonMessage, false);
-//        assertEquals(jsonMessage, entireFileText);
+        return JSONText;
     }
 }
