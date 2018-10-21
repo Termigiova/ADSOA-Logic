@@ -1,0 +1,9 @@
+{
+  "header":{
+    "tipoEntidadEmisora":0,
+    "folio":"folio",
+    "origen":"originFootprint",
+    "contentCode":0
+  },
+  "mensaje":"This is a message"
+}
