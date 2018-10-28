@@ -52,7 +52,7 @@ public class Interface extends AbstractEntity {
     public static void main(String[] args) throws IOException {
 
         Interface client = new Interface();
-        client.connectToPort(5001);
+        client.connectToPort(5000);
         client.getInfo();
         client.start();
         client.sendOutput();
