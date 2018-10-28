@@ -43,7 +43,7 @@ public class NodeServerListener extends Thread{
                 Socket socketToEntity = serverSocket.accept();
                 MessageHandler messageHandler = new MessageHandler(socketToEntity, node);
                 messageHandler.start();
-//                node.addIncomingSocket(socketToEntity);
+                node.addIncomingLinker(messageHandler.getLinker());
             } catch (IOException e) {
                 e.printStackTrace();
             }

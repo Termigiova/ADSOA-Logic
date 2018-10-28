@@ -7,7 +7,7 @@ import java.net.Socket;
 
 public class MessageHandler extends Thread{
 
-    public Linker linker;
+    private Linker linker;
     private Node node;
 
     public MessageHandler(Socket socket, Node node) throws IOException {
@@ -20,8 +20,7 @@ public class MessageHandler extends Thread{
         while (true) {
             try {
                 Object o = linker.readMessage();
-//                System.out.println("Read object: " + o);
-                node.printReadObject("Read object: " + o);
+                node.readInput("Read object: " + o);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -30,4 +29,7 @@ public class MessageHandler extends Thread{
         }
     }
 
+    public Linker getLinker() {
+        return linker;
+    }
 }

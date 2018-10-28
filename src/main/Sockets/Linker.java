@@ -16,7 +16,6 @@ public class Linker {
             this.socket = socket;
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            System.out.println("Connected to port: " + socket.getLocalPort());
         } catch (Exception e) {
 //            System.out.println("Error: " + e);
         }
@@ -33,5 +32,7 @@ public class Linker {
     public Object readMessage() throws IOException, ClassNotFoundException {
         return in.readObject();
     }
+
+    public Integer getPort() { return socket.getPort(); }
 
 }

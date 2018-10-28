@@ -2,23 +2,21 @@ package main.Entity;
 
 import main.Entity.Node.Node;
 import main.Enum.EnumType;
+import main.Sockets.Linker;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 public class EntityThread extends Thread {
-    protected Socket socket;
+    protected Linker linker;
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private Node node;
 
-    public EntityThread(Socket socket, Node node) throws IOException {
+    public EntityThread(Linker linker, Node node) throws IOException {
         this.node = node;
-        this.socket = socket;
-        out = new ObjectOutputStream(this.socket.getOutputStream());
-        in = new ObjectInputStream(this.socket.getInputStream());
+        this.linker = linker;
     }
 
     public void run() {
@@ -35,8 +33,8 @@ public class EntityThread extends Thread {
 
     private void setEntityType() throws IOException, ClassNotFoundException {
         int type = getEntityType();
-        Entity entity = node.getNode(this);
-        entity.setType(type);
+//        Entity entity = node.getNode(linker,this);
+//        entity.setType(type);
     }
 
     private int getEntityType() throws IOException, ClassNotFoundException {
@@ -63,9 +61,9 @@ public class EntityThread extends Thread {
     }
 
     public void sendMessage(Object message) throws IOException {
-        node.printReadObject((String) message);
+        node.readInput((String) message);
 //        out.writeObject(message);
     }
 
-    public Entity getNode() { return node.getNode(this);}
+//    public Entity getNode() { return node.getNode(this);}
 }

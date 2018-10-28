@@ -1,24 +1,23 @@
 package main.Entity;
 
 import main.Enum.EnumType;
+import main.Sockets.Linker;
 
 public class Entity {
 
-    private EntityThread entityThread;
+    private Linker linker;
     private int type;
 
-    public Entity(EntityThread entityThread) {
-        this.entityThread = entityThread;
+    public Entity(Linker linker) {
+        this.linker = linker;
     }
 
-    public EntityThread getEntityThread() { return this.entityThread; }
+    public Linker getLinker() { return this.linker; }
 
     public void setType(int type) { this.type = type; }
 
     public int getType() {
         EnumType type = new EnumType();
-//        System.out.println("Node type: " + type.toString(this.type));
-
         return type.getType(this.type);
     }
 
