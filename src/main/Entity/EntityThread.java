@@ -40,7 +40,7 @@ public class EntityThread extends Thread {
     }
 
     private int getEntityType() throws IOException, ClassNotFoundException {
-        String inputLine = (String) in.readObject();
+        String inputLine = in.readObject().toString();
         while (true) {
             if (inputLine.contains("setType")) {
                 String array[] = inputLine.split(":");
@@ -55,14 +55,15 @@ public class EntityThread extends Thread {
 
         while (true) {
             inputLine = in.readObject();
-            node.processMessage(inputLine, this);
+//            node.processMessage(inputLine, this);
+            sendMessage(inputLine);
             if (inputLine.equals("Bye."))
                 break;
         }
     }
 
     public void sendMessage(Object message) throws IOException {
-        node.sendMessage(message);
+//        node.sendMessage(message);
         out.writeObject(message);
     }
 

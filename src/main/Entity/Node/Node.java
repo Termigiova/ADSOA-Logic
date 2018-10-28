@@ -85,6 +85,7 @@ public class Node extends AbstractEntity {
             message = (Object[]) operation;
             sendOutput();
         }
+
     }
 
     @Override
@@ -92,12 +93,12 @@ public class Node extends AbstractEntity {
         System.out.println("Node sending: " + result);
     }
 
-    public void processMessage(Object message, EntityThread origin) throws IOException {
-        if(comesFromNode(origin))
-            sendMessageToConnectedEntitiesExceptNode(message);
-        else
-            sendMessageToConnectedEntities(message);
-    }
+//    public void processMessage(Object message, EntityThread origin) throws IOException {
+//        if(comesFromNode(origin))
+//            sendMessageToConnectedEntitiesExceptNode(message);
+//        else
+//            sendMessageToConnectedEntities(message);
+//    }
 
     private boolean comesFromNode(EntityThread origin) {
         Entity originEntity = origin.getNode();

@@ -15,7 +15,7 @@ public abstract class AbstractEntity extends Thread implements EntityInterface {
     private Socket socket;
     private Integer type;
     private Integer contentCode;
-    private String Footprint;
+    private String footprint;
 
     protected AbstractEntity() {
     }
@@ -24,11 +24,11 @@ public abstract class AbstractEntity extends Thread implements EntityInterface {
         try {
             String hostName = getHostname();
             socket = new Socket(hostName, portNumber);
-            out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("Connected to port: " + portNumber);
         } catch (Exception e) {
-            System.out.println("Error: " + e);
+//            System.out.println("Error: " + e);
         }
     }
 
@@ -69,11 +69,11 @@ public abstract class AbstractEntity extends Thread implements EntityInterface {
         // Show type in console
         EnumType type = new EnumType();
         System.out.println("Setting type: " + type.toString(this.type));
-        try {
-            out.writeObject("setType:" + type.getType(this.type));
-        } catch (Exception e) {
-            System.out.println("Could not send setType message");
-        }
+//        try {
+//            out.writeObject("setType:" + type.getType(this.type));
+//        } catch (Exception e) {
+//            System.out.println("Could not send setType message");
+//        }
     }
 
     public void getInfo() {
