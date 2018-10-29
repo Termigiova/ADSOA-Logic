@@ -6,9 +6,14 @@ import main.Sockets.Linker;
 public class Entity {
 
     private Linker linker;
-    private int type;
+    private Integer type;
+    private String footprint;
 
-    public Entity(Linker linker) {
+    public Entity() {
+
+    }
+
+    public void setLinker(Linker linker) {
         this.linker = linker;
     }
 
@@ -21,4 +26,11 @@ public class Entity {
         return type.getType(this.type);
     }
 
+    public void generateFootprint() {
+        this.footprint = "Node" + Math.random();
+    }
+
+    public String getFootprint() {
+        return footprint;
+    }
 }

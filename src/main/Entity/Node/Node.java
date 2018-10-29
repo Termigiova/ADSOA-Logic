@@ -2,6 +2,7 @@ package main.Entity.Node;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import main.Entity.Entity;
+import main.Enum.EnumType;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
 
@@ -17,21 +18,20 @@ public class Node {
     private final Integer MAX_PORT_NUMBER = 5010;
     private ArrayList<Entity> arrayListOfEntities;
     private NodeServerListener nodeServerListener;
-    private Linker linker;
+    private Entity entity;
     private JSONMessage jsonMessage;
     private String message;
 
     private Node() throws IOException {
         arrayListOfEntities = new ArrayList<>();
         jsonMessage = new JSONMessage();
+        entity = new Entity();
 
         createNodeListener();
-        createNodeLinker();
+        initializeEntityValues();
         connectToOtherNodes();
 
         sendThisPortToOtherNodes();
-
-//        message = jsonMessage.createJSONMessage();
 
         sendOutput();
     }
@@ -41,10 +41,16 @@ public class Node {
         nodeServerListener.start();
     }
 
-    private void createNodeLinker() throws IOException {
+    private void initializeEntityValues() throws IOException {
+        Linker linker = getNodeLinker();
+        this.entity.setLinker(linker);
+        this.entity.setType(EnumType.NODE);
+        this.entity.generateFootprint();
+    }
+
+    private Linker getNodeLinker() throws IOException {
         Socket socketToThisServer = new Socket(nodeServerListener.getHostname(), nodeServerListener.getLocalPort());
-        linker = new Linker(socketToThisServer);
-        linker.sendMessage("Testing createNodeLinker on port " + nodeServerListener.getLocalPort());
+        return new Linker(socketToThisServer);
     }
 
     private void connectToOtherNodes() {
@@ -66,7 +72,8 @@ public class Node {
     }
 
     void addIncomingLinker(Linker incomingLinker) {
-        Entity entity = new Entity(incomingLinker);
+        Entity entity = new Entity();
+        entity.setLinker(incomingLinker);
         arrayListOfEntities.add(entity);
     }
 
