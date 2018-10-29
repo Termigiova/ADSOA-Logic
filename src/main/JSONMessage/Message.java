@@ -7,6 +7,10 @@ public class Message {
 
     private String message;
 
+    Message() {
+        message = "";
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }
