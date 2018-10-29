@@ -1,17 +1,15 @@
 package main.Entity.Node;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import main.Entity.Entity;
-import main.Entity.EntityThread;
+import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
-import main.Sockets.MessageHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Node {
 
@@ -19,22 +17,23 @@ public class Node {
     private final Integer MAX_PORT_NUMBER = 5010;
     private ArrayList<Entity> arrayListOfEntities;
     private NodeServerListener nodeServerListener;
-    private ServerSocket serverSocket;
-    private String message;
     private Linker linker;
-    MessageHandler messageHandler;
+    private JSONMessage jsonMessage;
+    private String message;
 
     private Node() throws IOException {
         arrayListOfEntities = new ArrayList<>();
+        jsonMessage = new JSONMessage();
 
         createNodeListener();
         createNodeLinker();
         connectToOtherNodes();
 
-        sendTestMessagesToConnectedNodes();
+        sendThisPortToOtherNodes();
+
+//        message = jsonMessage.createJSONMessage();
 
         sendOutput();
-
     }
 
     private void createNodeListener() throws IOException {
@@ -71,10 +70,10 @@ public class Node {
         arrayListOfEntities.add(entity);
     }
 
-    void sendTestMessagesToConnectedNodes() {
+    void sendThisPortToOtherNodes() throws JsonProcessingException {
         for (Entity destinationEntity : arrayListOfEntities) {
             Linker destinationLinker = destinationEntity.getLinker();
-            destinationLinker.sendMessage("Sending message to " + destinationLinker.getPort() + " from " + nodeServerListener.getLocalPort());
+            destinationLinker.sendMessage(jsonMessage.createJSONPortMessage(nodeServerListener.getLocalPort()));
         }
     }
 
@@ -94,8 +93,10 @@ public class Node {
     }
 
     public void readInput(String message) throws IOException {
-        if(message.equals("Read object: 5001"))
-            connectToPort(5001);
+        if(message.contains("portNumber")) {
+            Integer portNumber = jsonMessage.readJSONPortMessage(message);
+            connectToPort(portNumber);
+        }
         System.out.println(message);
     }
 

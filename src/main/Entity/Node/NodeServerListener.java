@@ -1,13 +1,10 @@
 package main.Entity.Node;
 
-import main.Entity.Entity;
-import main.Entity.EntityThread;
 import main.Sockets.MessageHandler;
 
 import javax.net.ServerSocketFactory;
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
 
 public class NodeServerListener extends Thread{
 
@@ -15,9 +12,6 @@ public class NodeServerListener extends Thread{
     private final Integer MAX_PORT_NUMBER = 5010;
     private Node node;
     private ServerSocket serverSocket;
-    private EntityThread entityThread;
-    private Entity entity;
-    private ArrayList<Entity> arrayListOfEntities;
 
     NodeServerListener(Node node) throws IOException {
         this.node = node;

@@ -19,12 +19,12 @@ public class MessageHandler extends Thread{
     public void run() {
         while (true) {
             try {
-                Object o = linker.readMessage();
-                node.readInput("Read object: " + o);
+                String message = linker.readMessage();
+                node.readInput(message);
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
     }

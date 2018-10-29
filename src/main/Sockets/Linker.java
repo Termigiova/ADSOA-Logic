@@ -29,8 +29,8 @@ public class Linker {
         }
     }
 
-    public Object readMessage() throws IOException, ClassNotFoundException {
-        return in.readObject();
+    public String readMessage() throws IOException, ClassNotFoundException {
+        return (String) in.readObject();
     }
 
     public Integer getPort() { return socket.getPort(); }
