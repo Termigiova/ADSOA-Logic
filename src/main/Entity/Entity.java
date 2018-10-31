@@ -9,10 +9,6 @@ public class Entity {
     private Integer type;
     private String footprint;
 
-    public Entity() {
-
-    }
-
     public void setLinker(Linker linker) {
         this.linker = linker;
     }

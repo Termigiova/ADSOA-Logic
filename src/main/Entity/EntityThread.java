@@ -61,7 +61,7 @@ public class EntityThread extends Thread {
     }
 
     public void sendMessage(Object message) throws IOException {
-        node.readInput((String) message);
+//        node.readInput((String) message);
 //        out.writeObject(message);
     }
 

@@ -1,5 +1,6 @@
 package main.Entity.Node;
 
+import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
 
 import java.io.IOException;
@@ -11,10 +12,12 @@ public class NodeMessageHandler extends Thread {
     private Node node;
     private String message;
     private String response;
+    private JSONMessage jsonMessage;
 
-    public NodeMessageHandler(Socket socket, Node node) {
+    NodeMessageHandler(Socket socket, Node node) {
         this.node = node;
         linker = new Linker(socket);
+        jsonMessage = new JSONMessage();
     }
 
     @Override
@@ -22,8 +25,7 @@ public class NodeMessageHandler extends Thread {
         while (true) {
             try {
                 message = linker.readMessage();
-                response = processMessage(message);
-                node.readInput(message);
+                processMessage(message);
             } catch (IOException e) {
 //                e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -32,8 +34,12 @@ public class NodeMessageHandler extends Thread {
         }
     }
 
-    private String processMessage(String message) {
-        return message;
+    private void processMessage(String message) throws IOException {
+        if(message.contains("portNumber")) {
+            Integer portNumber = jsonMessage.readJSONPortMessage(message);
+            node.connectToPort(portNumber);
+        }
+        System.out.println(message);
     }
 
     public Linker getLinker() {

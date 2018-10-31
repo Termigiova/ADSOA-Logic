@@ -20,7 +20,7 @@ public class MessageHandler extends Thread{
         while (true) {
             try {
                 String message = linker.readMessage();
-                node.readInput(message);
+//                node.readInput(message);
             } catch (IOException e) {
 //                e.printStackTrace();
             } catch (ClassNotFoundException e) {

@@ -1,7 +1,5 @@
 package main.Entity.Node;
 
-import main.Sockets.MessageHandler;
-
 import javax.net.ServerSocketFactory;
 import java.io.IOException;
 import java.net.*;
@@ -13,7 +11,7 @@ public class NodeServerListener extends Thread{
     private Node node;
     private ServerSocket serverSocket;
 
-    NodeServerListener(Node node) throws IOException {
+    NodeServerListener(Node node) {
         this.node = node;
         tryToConnectToAvailablePort();
     }
@@ -25,7 +23,7 @@ public class NodeServerListener extends Thread{
                 System.out.println("Connected to port " + portNumber);
                 break;
             } catch (Exception e) {
-
+//                e.printStackTrace();
             }
         }
     }
@@ -35,18 +33,18 @@ public class NodeServerListener extends Thread{
         while (true) {
             try {
                 Socket socketToEntity = serverSocket.accept();
-                MessageHandler messageHandler = new MessageHandler(socketToEntity, node);
-                messageHandler.start();
-                node.addIncomingLinker(messageHandler.getLinker());
+                NodeMessageHandler nodeMessageHandler = new NodeMessageHandler(socketToEntity, node);
+                nodeMessageHandler.start();
+                node.addIncomingLinker(nodeMessageHandler.getLinker());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public Integer getLocalPort() { return serverSocket.getLocalPort(); }
+    Integer getLocalPort() { return serverSocket.getLocalPort(); }
 
-    public String getHostname() {
+    String getHostname() {
         String hostName = "";
 
         try {

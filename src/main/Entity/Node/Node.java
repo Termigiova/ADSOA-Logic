@@ -65,7 +65,7 @@ public class Node {
         }
     }
 
-    private void connectToPort(Integer portNumber) throws IOException {
+    void connectToPort(Integer portNumber) throws IOException {
         Socket socketToThisServer = new Socket(nodeServerListener.getHostname(), portNumber);
         Linker linker = new Linker(socketToThisServer);
         addIncomingLinker(linker);
@@ -77,14 +77,15 @@ public class Node {
         arrayListOfEntities.add(entity);
     }
 
-    void sendThisPortToOtherNodes() throws JsonProcessingException {
+    private void sendThisPortToOtherNodes() throws JsonProcessingException {
         for (Entity destinationEntity : arrayListOfEntities) {
             Linker destinationLinker = destinationEntity.getLinker();
-            destinationLinker.sendMessage(jsonMessage.createJSONPortMessage(nodeServerListener.getLocalPort()));
+            String jsonPortMessage = jsonMessage.createJSONPortMessage(nodeServerListener.getLocalPort());
+            destinationLinker.sendMessage(jsonPortMessage);
         }
     }
 
-    public void sendOutput() throws IOException {
+    private void sendOutput() throws IOException {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String fromUser;
 
@@ -97,14 +98,6 @@ public class Node {
                 }
             }
         }
-    }
-
-    public void readInput(String message) throws IOException {
-        if(message.contains("portNumber")) {
-            Integer portNumber = jsonMessage.readJSONPortMessage(message);
-            connectToPort(portNumber);
-        }
-        System.out.println(message);
     }
 
     public static void main(String args[]) throws IOException {
