@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import main.Enum.EnumContentCode;
@@ -42,6 +43,7 @@ public class JSONMessage {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("contentCode", EnumContentCode.INITIAL_NODE_CONF);
         objectNode.put("entity", "node");
         objectNode.put("portNumber", portNumber);
         objectNode.put("type", type);
@@ -51,11 +53,11 @@ public class JSONMessage {
         return parsedJSONMessage;
     }
 
-    public String createJSONConnectInterfaceMessage() {
+    public String createConnectInterfaceMessage() {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("entity", "interface");
+        objectNode.put("contentCode", EnumContentCode.INITIAL_INTERFACE_CONF);
         objectNode.put("type", EnumType.INTERFACE);
 
         String parsedJSONMessage = objectNode.toString();
@@ -63,7 +65,38 @@ public class JSONMessage {
         return parsedJSONMessage;
     }
 
-    public Integer readJSONPortMessage(String JSONPortMessage) throws IOException {
+    public String createInterfaceMessage(Integer contentCode) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("contentCode", contentCode);
+        objectNode.put("origin", EnumType.INTERFACE);
+        objectNode.put("firstValue", 1);
+        objectNode.put("secondValue", 1);
+
+        String parsedJSONMessage = objectNode.toString();
+
+        return parsedJSONMessage;
+    }
+
+    public String updateOriginMessage(Integer origin, String message) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectReader reader = objectMapper.reader();
+        String parsedJSONMessage = "";
+
+        try {
+            JsonNode jsonNode = reader.readTree(message);
+            ObjectNode objectNode = (ObjectNode) jsonNode;
+            objectNode.put("origin", origin);
+            parsedJSONMessage = objectNode.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return parsedJSONMessage;
+    }
+
+    public Integer getJSONPortMessage(String JSONPortMessage) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode rootNode = objectMapper.readTree(JSONPortMessage);
@@ -72,13 +105,31 @@ public class JSONMessage {
         return portNumber.asInt();
     }
 
-    public Integer readJSONTypeMessage(String JSONTypeMessage) throws IOException {
+    public Integer getJSONTypeMessage(String JSONTypeMessage) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
         JsonNode type = rootNode.path("type");
 
         return type.asInt();
+    }
+
+    public Integer getContentCode(String JSONTypeMessage) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
+        JsonNode contentCode = rootNode.path("contentCode");
+
+        return contentCode.asInt();
+    }
+
+    public Integer getOrigin(String JSONTypeMessage) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
+        JsonNode origin = rootNode.path("origin");
+
+        return origin.asInt();
     }
 
     private ObjectMapper getObjectMapperWithModule(String moduleName) {

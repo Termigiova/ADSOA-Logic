@@ -1,6 +1,7 @@
 package main.Entity.Interface;
 
 import main.Entity.Entity;
+import main.Enum.EnumContentCode;
 import main.Enum.EnumType;
 import main.JSONMessage.JSONMessage;
 import main.MessageHandler.InterfaceMessageHandler;
@@ -79,7 +80,9 @@ public class Interface {
         while(true) {
             fromUser = stdIn.readLine();
             if (fromUser != null) {
-                linker.sendMessage(fromUser);
+                String message = jsonMessage.createInterfaceMessage(EnumContentCode.SUM);
+//                linker.sendMessage(fromUser);
+                linker.sendMessage(message);
             }
         }
     }

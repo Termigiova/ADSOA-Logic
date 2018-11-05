@@ -21,7 +21,7 @@ public class InterfaceMessageHandler extends AbstractMessageHandler {
     }
 
     private void sendSetTypeMessage() {
-        String jsonTypeMessage = jsonMessage.createJSONConnectInterfaceMessage();
+        String jsonTypeMessage = jsonMessage.createConnectInterfaceMessage();
         Linker linker = entity.getLinker();
         linker.sendMessage(jsonTypeMessage);
     }
