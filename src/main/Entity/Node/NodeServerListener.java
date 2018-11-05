@@ -1,5 +1,7 @@
 package main.Entity.Node;
 
+import main.MessageHandler.NodeMessageHandler;
+
 import javax.net.ServerSocketFactory;
 import java.io.IOException;
 import java.net.*;
@@ -34,8 +36,7 @@ public class NodeServerListener extends Thread{
             try {
                 Socket socketToEntity = serverSocket.accept();
                 NodeMessageHandler nodeMessageHandler = new NodeMessageHandler(socketToEntity, node);
-                nodeMessageHandler.start();
-                node.addIncomingLinker(nodeMessageHandler.getLinker());
+                node.addIncomingLinker(nodeMessageHandler.getEntity());
             } catch (IOException e) {
                 e.printStackTrace();
             }

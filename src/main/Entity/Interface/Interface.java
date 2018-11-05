@@ -1,61 +1,94 @@
 package main.Entity.Interface;
 
-import main.Entity.AbstractEntity;
+import main.Entity.Entity;
 import main.Enum.EnumType;
+import main.JSONMessage.JSONMessage;
+import main.MessageHandler.InterfaceMessageHandler;
+import main.Sockets.Linker;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-public class Interface extends AbstractEntity {
+public class Interface {
+
+    private Entity entity;
+    private JSONMessage jsonMessage;
 
     private Interface() throws IOException {
-        super();
-        setType(EnumType.INTERFACE);
+        entity = new Entity();
+        jsonMessage = new JSONMessage();
+
+        initializeEntityValues();
+        initializeMessageHandler();
+
+        sendOutput();
     }
 
-    @Override
-    public void readFromIncomingInput() throws IOException, ClassNotFoundException {
-        Object operation;
+    private void initializeEntityValues() throws IOException {
+        Linker linker = getLinker();
+        this.entity.setLinker(linker);
+        this.entity.setType(EnumType.INTERFACE);
+        this.entity.generateFootprint();
+    }
 
-        while (true) {
-            operation = in.readObject();
-            System.out.println("Interface receiving: " + Arrays.toString((Object[]) operation));
+    private Linker getLinker() throws IOException {
+        Socket socket = createSocketInPort(5000);
+        return new Linker(socket);
+    }
+
+    private void initializeMessageHandler() {
+        InterfaceMessageHandler interfaceMessageHandler = new InterfaceMessageHandler(entity, this);
+        interfaceMessageHandler.start();
+    }
+
+    private Socket createSocketInPort(Integer portNumber) {
+        Socket socket;
+        try {
+            socket = new Socket(getHostname(), portNumber);
+            return socket;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
-    @Override
-    public void sendOutput() throws IOException {
+    private String getHostname() {
+        String hostName = "";
+
+        try {
+            hostName = InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString();
+            hostName = hostName.replace("/","");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        return hostName;
+    }
+
+    private void sendOutput() throws IOException {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String fromUser;
+        Linker linker = entity.getLinker();
 
         while(true) {
             fromUser = stdIn.readLine();
             if (fromUser != null) {
-                Object[] message = formatMessageToObjectArray(fromUser);
-                System.out.println("Interface sending: " + Arrays.toString(message));
-                out.writeObject(message);
+                linker.sendMessage(fromUser);
             }
         }
     }
 
-    private Object[] formatMessageToObjectArray(String fromUser) {
-        String[] stringArray = fromUser.split(" ");
-        Object[] objectArray = new Object[stringArray.length];
-        for (int i = 0; i < stringArray.length; i++) {
-            objectArray[i] = Integer.parseInt(stringArray[i]);
-        }
-        return objectArray;
+    public void readIncomingInput(String message) {
+        System.out.println(message);
     }
 
     public static void main(String[] args) throws IOException {
-
         Interface client = new Interface();
-        client.connectToPort(5000);
-        client.getInfo();
-        client.start();
-        client.sendOutput();
-
     }
 }

@@ -38,11 +38,12 @@ public class JSONMessage {
 
     }
 
-    public String createJSONPortMessage(Integer portNumber) throws JsonProcessingException {
+    public String createJSONPortMessage(Integer portNumber, Integer type) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("portNumber", portNumber);
+        objectNode.put("type", type);
 
         String parsedJSONMessage = objectNode.toString();
 
@@ -56,6 +57,15 @@ public class JSONMessage {
         JsonNode portNumber = rootNode.path("portNumber");
 
         return portNumber.asInt();
+    }
+
+    public Integer readJSONTypeMessage(String JSONTypeMessage) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
+        JsonNode type = rootNode.path("type");
+
+        return type.asInt();
     }
 
     private ObjectMapper getObjectMapperWithModule(String moduleName) {

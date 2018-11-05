@@ -28,7 +28,7 @@ public class Node {
         entity = new Entity();
 
         createNodeListener();
-        initializeEntityValues();
+        initializeNodeEntityValues();
         connectToOtherNodes();
 
         sendThisPortToOtherNodes();
@@ -41,7 +41,7 @@ public class Node {
         nodeServerListener.start();
     }
 
-    private void initializeEntityValues() throws IOException {
+    private void initializeNodeEntityValues() throws IOException {
         Linker linker = getNodeLinker();
         this.entity.setLinker(linker);
         this.entity.setType(EnumType.NODE);
@@ -58,44 +58,58 @@ public class Node {
             try {
                 if (portNumber == nodeServerListener.getLocalPort())
                     continue;
-                connectToPort(portNumber);
+                createAndAddNodeFromPort(portNumber, EnumType.NODE);
             } catch (IOException e) {
 //                e.printStackTrace();
             }
         }
     }
 
-    void connectToPort(Integer portNumber) throws IOException {
+    public void createAndAddNodeFromPort(Integer portNumber, Integer type) throws IOException {
         Socket socketToThisServer = new Socket(nodeServerListener.getHostname(), portNumber);
         Linker linker = new Linker(socketToThisServer);
-        addIncomingLinker(linker);
+        Entity entity = new Entity();
+
+        entity.setLinker(linker);
+        entity.setType(type);
+        addIncomingLinker(entity);
     }
 
-    void addIncomingLinker(Linker incomingLinker) {
-        Entity entity = new Entity();
-        entity.setLinker(incomingLinker);
+    void addIncomingLinker(Entity entity) {
         arrayListOfEntities.add(entity);
     }
 
     private void sendThisPortToOtherNodes() throws JsonProcessingException {
         for (Entity destinationEntity : arrayListOfEntities) {
             Linker destinationLinker = destinationEntity.getLinker();
-            String jsonPortMessage = jsonMessage.createJSONPortMessage(nodeServerListener.getLocalPort());
+            String jsonPortMessage = jsonMessage.createJSONPortMessage(nodeServerListener.getLocalPort(), entity.getType());
             destinationLinker.sendMessage(jsonPortMessage);
         }
     }
 
     private void sendOutput() throws IOException {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        String fromUser;
+        String message;
 
         while(true) {
-            fromUser = stdIn.readLine();
-            if (fromUser != null) {
-                for (Entity destinationEntity : arrayListOfEntities) {
-                    Linker destinationLinker = destinationEntity.getLinker();
-                    destinationLinker.sendMessage(fromUser);
-                }
+            message = stdIn.readLine();
+            if (message != null)
+                sendMessageToConnectedLinkers(message);
+        }
+    }
+
+    public void sendMessageToConnectedLinkers(String message) {
+        for (Entity destinationEntity : arrayListOfEntities) {
+            Linker destinationLinker = destinationEntity.getLinker();
+            destinationLinker.sendMessage(message);
+        }
+    }
+
+    public void sendMessageToNonNodeLinkers(String message) {
+        for (Entity destinationEntity : arrayListOfEntities) {
+            if (destinationEntity.getType() != EnumType.NODE) {
+                Linker destinationLinker = destinationEntity.getLinker();
+                destinationLinker.sendMessage(message);
             }
         }
     }
