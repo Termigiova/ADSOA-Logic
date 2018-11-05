@@ -32,17 +32,23 @@ public class NodeMessageHandler extends AbstractMessageHandler {
     }
 
     public void processMessage(String message) throws IOException {
-        if(message.contains("portNumber")) {
+        if(message.contains("\"entity\":\"node\"")) {
             Integer portNumber = jsonMessage.readJSONPortMessage(message);
             Integer type = jsonMessage.readJSONTypeMessage(message);
             node.createAndAddNodeFromPort(portNumber, type);
             System.out.println(message);
+        } else if (message.contains("\"entity\":\"interface\"")) {
+            System.out.println("Adding interface from: " + message);
+            Integer type = jsonMessage.readJSONTypeMessage(message);
+            entity.setType(type);
         } else if (message.contains("interface")) {
+            message = message.replace("interface", "node");
             System.out.println("Interface: " + message);
-            node.sendMessageToConnectedLinkers("Message from int coming from node");
+            node.sendMessageToConnectedLinkers(message);
         } else if (message.contains("node")){
+            message = message.replace("node", "");
             System.out.println("Node: " + message);
-            node.sendMessageToNonNodeLinkers("Coming from nod: " + message);
+            node.sendMessageToNonNodeLinkers(message);
         }
     }
 

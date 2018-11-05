@@ -38,12 +38,25 @@ public class JSONMessage {
 
     }
 
-    public String createJSONPortMessage(Integer portNumber, Integer type) throws JsonProcessingException {
+    public String createJSONConnectNodeMessage(Integer portNumber, Integer type) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("entity", "node");
         objectNode.put("portNumber", portNumber);
         objectNode.put("type", type);
+
+        String parsedJSONMessage = objectNode.toString();
+
+        return parsedJSONMessage;
+    }
+
+    public String createJSONConnectInterfaceMessage() {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("entity", "interface");
+        objectNode.put("type", EnumType.INTERFACE);
 
         String parsedJSONMessage = objectNode.toString();
 

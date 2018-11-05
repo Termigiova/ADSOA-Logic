@@ -82,7 +82,7 @@ public class Node {
     private void sendThisPortToOtherNodes() throws JsonProcessingException {
         for (Entity destinationEntity : arrayListOfEntities) {
             Linker destinationLinker = destinationEntity.getLinker();
-            String jsonPortMessage = jsonMessage.createJSONPortMessage(nodeServerListener.getLocalPort(), entity.getType());
+            String jsonPortMessage = jsonMessage.createJSONConnectNodeMessage(nodeServerListener.getLocalPort(), entity.getType());
             destinationLinker.sendMessage(jsonPortMessage);
         }
     }

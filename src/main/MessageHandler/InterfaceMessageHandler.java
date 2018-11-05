@@ -3,6 +3,7 @@ package main.MessageHandler;
 import main.Entity.Entity;
 import main.Entity.Interface.Interface;
 import main.JSONMessage.JSONMessage;
+import main.Sockets.Linker;
 
 public class InterfaceMessageHandler extends AbstractMessageHandler {
 
@@ -15,6 +16,14 @@ public class InterfaceMessageHandler extends AbstractMessageHandler {
         this.clientInterface = clientInterface;
         this.entity = entity;
         jsonMessage = new JSONMessage();
+
+        sendSetTypeMessage();
+    }
+
+    private void sendSetTypeMessage() {
+        String jsonTypeMessage = jsonMessage.createJSONConnectInterfaceMessage();
+        Linker linker = entity.getLinker();
+        linker.sendMessage(jsonTypeMessage);
     }
 
     public void processMessage(String message) {
