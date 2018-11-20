@@ -19,7 +19,11 @@ public class Interface {
     private Entity entity;
     private JSONMessage jsonMessage;
 
-    private Interface() throws IOException {
+    private Integer portNumber;
+
+    private Interface(Integer portNumber) throws IOException {
+        this.portNumber = portNumber;
+
         entity = new Entity();
         jsonMessage = new JSONMessage();
 
@@ -37,7 +41,7 @@ public class Interface {
     }
 
     private Linker getLinker() throws IOException {
-        Socket socket = createSocketInPort(5000);
+        Socket socket = createSocketInPort(portNumber);
         return new Linker(socket);
     }
 
@@ -92,6 +96,9 @@ public class Interface {
     }
 
     public static void main(String[] args) throws IOException {
-        Interface client = new Interface();
+        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+        String portNumber = stdIn.readLine();
+
+        Interface client = new Interface(Integer.parseInt(portNumber));
     }
 }

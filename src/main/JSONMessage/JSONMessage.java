@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import main.Entity.Entity;
 import main.Enum.EnumContentCode;
 import main.Enum.EnumType;
 
@@ -39,14 +40,14 @@ public class JSONMessage {
 
     }
 
-    public String createJSONConnectNodeMessage(Integer portNumber, Integer type) throws JsonProcessingException {
+    public String createJSONConnectNodeMessage(Integer portNumber, Entity entity) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("contentCode", EnumContentCode.INITIAL_NODE_CONF);
-        objectNode.put("entity", "node");
         objectNode.put("portNumber", portNumber);
-        objectNode.put("type", type);
+        objectNode.put("type", entity.getType());
+        objectNode.put("footprint", entity.getFootprint());
 
         String parsedJSONMessage = objectNode.toString();
 
@@ -96,7 +97,7 @@ public class JSONMessage {
         return parsedJSONMessage;
     }
 
-    public Integer getJSONPortMessage(String JSONPortMessage) throws IOException {
+    public Integer getPortNumber(String JSONPortMessage) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode rootNode = objectMapper.readTree(JSONPortMessage);
@@ -105,7 +106,7 @@ public class JSONMessage {
         return portNumber.asInt();
     }
 
-    public Integer getJSONTypeMessage(String JSONTypeMessage) throws IOException {
+    public Integer getType(String JSONTypeMessage) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
@@ -131,6 +132,17 @@ public class JSONMessage {
 
         return origin.asInt();
     }
+
+    public String getFootprint(String JSONTypeMessage) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
+        JsonNode footprint = rootNode.path("footprint");
+
+        return footprint.toString();
+    }
+
+
 
     private ObjectMapper getObjectMapperWithModule(String moduleName) {
         MessageSerializer messageSerializer = new MessageSerializer(JSONMessage.class);

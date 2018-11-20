@@ -8,8 +8,6 @@ import java.net.*;
 
 public class NodeServerListener extends Thread{
 
-    private final Integer MIN_PORT_NUMBER = 5000;
-    private final Integer MAX_PORT_NUMBER = 5010;
     private Node node;
     private ServerSocket serverSocket;
 
@@ -19,7 +17,9 @@ public class NodeServerListener extends Thread{
     }
 
     private void tryToConnectToAvailablePort() {
-        for (int portNumber = MIN_PORT_NUMBER; portNumber <= MAX_PORT_NUMBER ; portNumber++) {
+        Integer MAX_PORT_NUMBER = 5010;
+        Integer MIN_PORT_NUMBER = 5000;
+        for (int portNumber = MIN_PORT_NUMBER; portNumber <= MAX_PORT_NUMBER; portNumber++) {
             try {
                 serverSocket = ServerSocketFactory.getDefault().createServerSocket(portNumber);
                 System.out.println("Connected to port " + portNumber);
@@ -36,7 +36,6 @@ public class NodeServerListener extends Thread{
             try {
                 Socket socketToEntity = serverSocket.accept();
                 NodeMessageHandler nodeMessageHandler = new NodeMessageHandler(socketToEntity, node);
-                node.addIncomingLinker(nodeMessageHandler.getEntity());
             } catch (IOException e) {
                 e.printStackTrace();
             }

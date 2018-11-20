@@ -23,6 +23,7 @@ public class Linker {
 
     public void sendMessage(String message) {
         try {
+            System.out.println("Sending message: " + message);
             out.writeObject(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -30,7 +31,9 @@ public class Linker {
     }
 
     public String readMessage() throws IOException, ClassNotFoundException {
-        return (String) in.readObject();
+        String message = (String) in.readObject();
+        System.out.println("Receiving message: " + message);
+        return message;
     }
 
     public Integer getPort() { return socket.getPort(); }

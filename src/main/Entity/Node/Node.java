@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import main.Entity.Entity;
 import main.Enum.EnumType;
 import main.JSONMessage.JSONMessage;
+import main.MessageHandler.NodeMessageHandler;
 import main.Sockets.Linker;
 
 import java.io.BufferedReader;
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 
 public class Node {
 
-    private final Integer MIN_PORT_NUMBER = 5000;
-    private final Integer MAX_PORT_NUMBER = 5010;
     private ArrayList<Entity> arrayListOfEntities;
     private NodeServerListener nodeServerListener;
     private Entity entity;
@@ -54,35 +53,49 @@ public class Node {
     }
 
     private void connectToOtherNodes() {
+        Integer MIN_PORT_NUMBER = 5000;
+        Integer MAX_PORT_NUMBER = 5010;
         for (int portNumber = MIN_PORT_NUMBER; portNumber <= MAX_PORT_NUMBER; portNumber++) {
             try {
                 if (portNumber == nodeServerListener.getLocalPort())
                     continue;
-                createAndAddNodeFromPort(portNumber, EnumType.NODE);
+                Socket socketToNode = new Socket(nodeServerListener.getHostname(), portNumber);
+                NodeMessageHandler nodeMessageHandler = new NodeMessageHandler(socketToNode, this);
             } catch (IOException e) {
 //                e.printStackTrace();
             }
         }
     }
 
-    public void createAndAddNodeFromPort(Integer portNumber, Integer type) throws IOException {
+    public String getConnectNodeMessage() throws JsonProcessingException {
+        return jsonMessage.createJSONConnectNodeMessage(nodeServerListener.getLocalPort(), entity);
+    }
+
+    public void createAndAddNode(String message) throws IOException {
+        Integer portNumber = jsonMessage.getPortNumber(message);
+        Integer type = jsonMessage.getType(message);
+        String footprint = jsonMessage.getFootprint(message);
+
+
         Socket socketToThisServer = new Socket(nodeServerListener.getHostname(), portNumber);
         Linker linker = new Linker(socketToThisServer);
         Entity entity = new Entity();
 
         entity.setLinker(linker);
         entity.setType(type);
+        entity.setFootprint(footprint);
         addIncomingLinker(entity);
     }
 
-    void addIncomingLinker(Entity entity) {
+    public void addIncomingLinker(Entity entity) {
         arrayListOfEntities.add(entity);
     }
 
     private void sendThisPortToOtherNodes() throws JsonProcessingException {
+        String jsonPortMessage = jsonMessage.createJSONConnectNodeMessage(nodeServerListener.getLocalPort(), entity);
+
         for (Entity destinationEntity : arrayListOfEntities) {
             Linker destinationLinker = destinationEntity.getLinker();
-            String jsonPortMessage = jsonMessage.createJSONConnectNodeMessage(nodeServerListener.getLocalPort(), entity.getType());
             destinationLinker.sendMessage(jsonPortMessage);
         }
     }
@@ -99,6 +112,7 @@ public class Node {
     }
 
     public void sendMessageToConnectedLinkers(String message) {
+        System.out.println("Number of connected linkers: " + arrayListOfEntities.size());
         for (Entity destinationEntity : arrayListOfEntities) {
             Linker destinationLinker = destinationEntity.getLinker();
             destinationLinker.sendMessage(message);
@@ -113,6 +127,8 @@ public class Node {
             }
         }
     }
+
+    public Entity getEntity() { return entity; }
 
     public static void main(String args[]) throws IOException {
         Node node = new Node();
