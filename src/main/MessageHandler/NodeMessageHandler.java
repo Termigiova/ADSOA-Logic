@@ -40,51 +40,57 @@ public class NodeMessageHandler extends AbstractMessageHandler {
 
     public void processMessage(String message) throws IOException {
         Integer contentCode = jsonMessage.getInteger("contentCode", message);
-        Integer type;
-        String footprint;
 
         System.out.println("Processing message: " + message);
         switch(contentCode) {
             case EnumContentCode.INITIAL_NODE_CONF:
                 System.out.println("Entering INITIAL_NODE_CONF");
-                type = jsonMessage.getInteger("type", message);
-                footprint = jsonMessage.getString("footprint", message);
-                entity.setType(type);
-                entity.setFootprint(footprint);
-                System.out.println("Adding incoming entity");
-                node.addIncomingLinker(entity);
+                initialNodeConfHandler(message);
                 break;
             case EnumContentCode.INITIAL_INTERFACE_CONF:
-                System.out.println("Adding interface from: " + message);
-                type = jsonMessage.getInteger("type", message);
-                entity.setType(type);
+                System.out.println("Entering INITIAL_INTERFACE_CONF");
+                initialInterfaceConfHandler(message);
                 break;
             case EnumContentCode.SUM:
             case EnumContentCode.SUBSTRACTION:
             case EnumContentCode.MULTIPLICATION:
             case EnumContentCode.DIVISION:
-                Integer origin = jsonMessage.getInteger("origin", message);
-                System.out.println("Entity before: " + message);
-                // TODO change updateOriginMessage for general cases
-                message = jsonMessage.updateOriginMessage(EnumType.NODE, message);
-                if (origin == EnumType.NODE) {
-                    System.out.println("Node: " + message);
-                    node.sendMessageToNonNodeLinkers(message);
-                } else {
-                    System.out.println("Entity after: " + message);
-                    node.sendMessageToConnectedLinkers(message);
-                }
+                System.out.println("Entering Business logic message handler");
+                businessLogicMessageHandler(message);
                 break;
         }
     }
 
-    private void printEntitySettings() {
-        EnumType enumType = new EnumType();
-        String type = enumType.toString(entity.getType());
+    private void initialNodeConfHandler(String message) throws IOException {
+        Integer type = jsonMessage.getInteger("type", message);
+        String footprint = jsonMessage.getString("footprint", message);
+        entity.setType(type);
+        entity.setFootprint(footprint);
+        System.out.println("Adding incoming entity");
+        node.addIncomingLinker(entity);
+    }
 
-        System.out.println("Entity settings: ");
-        System.out.println("Entity type: " + type);
-        System.out.println("Entity footprint: " + entity.getFootprint());
+    private void initialInterfaceConfHandler(String message) throws IOException {
+        Integer type = jsonMessage.getInteger("type", message);
+        String footprint = jsonMessage.getString("footprint", message);
+        entity.setType(type);
+        entity.setFootprint(footprint);
+        System.out.println("Adding Incoming Entity");
+        node.addIncomingLinker(entity);
+    }
+
+    private void businessLogicMessageHandler(String message) throws IOException {
+        Integer origin = jsonMessage.getInteger("origin", message);
+        System.out.println("Entity before: " + message);
+        // TODO change updateOriginMessage for general cases
+        message = jsonMessage.updateOriginMessage(EnumType.NODE, message);
+        if (origin == EnumType.NODE) {
+            System.out.println("Sending to non node linkers: " + message);
+            node.sendMessageToNonNodeLinkers(message);
+        } else {
+            System.out.println("Sending to all linkers: " + message);
+            node.sendMessageToConnectedLinkers(message);
+        }
     }
 
 }
