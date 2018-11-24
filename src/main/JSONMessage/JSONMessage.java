@@ -40,7 +40,7 @@ public class JSONMessage {
 
     }
 
-    public String createJSONConnectNodeMessage(Integer portNumber, Entity entity) throws JsonProcessingException {
+    public String createConnectNodeMessage(Integer portNumber, Entity entity) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
@@ -97,52 +97,23 @@ public class JSONMessage {
         return parsedJSONMessage;
     }
 
-    public Integer getPortNumber(String JSONPortMessage) throws IOException {
+    public Integer getInteger(String name, String JSONMessage) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        JsonNode rootNode = objectMapper.readTree(JSONPortMessage);
-        JsonNode portNumber = rootNode.path("portNumber");
+        JsonNode rootNode = objectMapper.readTree(JSONMessage);
+        JsonNode message = rootNode.path(name);
 
-        return portNumber.asInt();
+        return message.asInt();
     }
 
-    public Integer getType(String JSONTypeMessage) throws IOException {
+    public String getString(String name, String JSONMessage) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
-        JsonNode type = rootNode.path("type");
-
-        return type.asInt();
-    }
-
-    public Integer getContentCode(String JSONTypeMessage) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
-        JsonNode contentCode = rootNode.path("contentCode");
-
-        return contentCode.asInt();
-    }
-
-    public Integer getOrigin(String JSONTypeMessage) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
-        JsonNode origin = rootNode.path("origin");
-
-        return origin.asInt();
-    }
-
-    public String getFootprint(String JSONTypeMessage) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonNode rootNode = objectMapper.readTree(JSONTypeMessage);
-        JsonNode footprint = rootNode.path("footprint");
+        JsonNode rootNode = objectMapper.readTree(JSONMessage);
+        JsonNode footprint = rootNode.path(name);
 
         return footprint.toString();
     }
-
-
 
     private ObjectMapper getObjectMapperWithModule(String moduleName) {
         MessageSerializer messageSerializer = new MessageSerializer(JSONMessage.class);

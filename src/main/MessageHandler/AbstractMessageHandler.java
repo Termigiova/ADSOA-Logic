@@ -14,10 +14,10 @@ public abstract class AbstractMessageHandler extends Thread {
     @Override
     public void run() {
         receiveFirstMessageToGetEntityInformation();
-        manageMessage();
+        manageMessages();
     }
 
-    private void manageMessage() {
+    private void manageMessages() {
         String message;
         Linker linker = entity.getLinker();
         System.out.println("Ready to manage messages: ");
@@ -34,7 +34,7 @@ public abstract class AbstractMessageHandler extends Thread {
         }
     }
 
-    abstract boolean processMessage(String message) throws IOException;
+    abstract void processMessage(String message) throws IOException;
 
     private void receiveFirstMessageToGetEntityInformation() {
         String message;
@@ -45,10 +45,8 @@ public abstract class AbstractMessageHandler extends Thread {
                 message = linker.readMessage();
                 System.out.println("First Message: " + message);
                 JSONMessage jsonMessage = new JSONMessage();
-                Integer contentCode = jsonMessage.getContentCode(message);
-                if (contentCode == EnumContentCode.INITIAL_NODE_CONF ||
-                        contentCode == EnumContentCode.INITIAL_INTERFACE_CONF ||
-                        contentCode == EnumContentCode.INITIAL_OPERATION_CONF) {
+                Integer contentCode = jsonMessage.getInteger("contentCode", message);
+                if (contentCodeIsInitialConfiguration(contentCode)) {
                     processMessage(message);
                     break;
                 }
@@ -58,6 +56,12 @@ public abstract class AbstractMessageHandler extends Thread {
 //                e.printStackTrace();
             }
         }
+    }
+
+    private Boolean contentCodeIsInitialConfiguration(Integer contentCode) {
+        return (contentCode == EnumContentCode.INITIAL_NODE_CONF) ||
+                (contentCode == EnumContentCode.INITIAL_INTERFACE_CONF) ||
+                (contentCode == EnumContentCode.INITIAL_OPERATION_CONF);
     }
 
     public Entity getEntity() { return entity; }

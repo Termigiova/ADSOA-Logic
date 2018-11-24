@@ -26,9 +26,8 @@ public class InterfaceMessageHandler extends AbstractMessageHandler {
         linker.sendMessage(jsonTypeMessage);
     }
 
-    public boolean processMessage(String message) {
+    public void processMessage(String message) {
         System.out.println(message);
-        return false;
     }
 
 }

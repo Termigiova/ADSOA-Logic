@@ -15,7 +15,6 @@ public class NodeMessageHandler extends AbstractMessageHandler {
 
     private Node node;
     private String message;
-    private String response;
     private JSONMessage jsonMessage;
 
     public NodeMessageHandler(Socket socket, Node node) throws JsonProcessingException {
@@ -39,8 +38,8 @@ public class NodeMessageHandler extends AbstractMessageHandler {
         linker.sendMessage(message);
     }
 
-    public boolean processMessage(String message) throws IOException {
-        Integer contentCode = jsonMessage.getContentCode(message);
+    public void processMessage(String message) throws IOException {
+        Integer contentCode = jsonMessage.getInteger("contentCode", message);
         Integer type;
         String footprint;
 
@@ -48,26 +47,25 @@ public class NodeMessageHandler extends AbstractMessageHandler {
         switch(contentCode) {
             case EnumContentCode.INITIAL_NODE_CONF:
                 System.out.println("Entering INITIAL_NODE_CONF");
-                Integer portNumber = jsonMessage.getPortNumber(message);
-                type = jsonMessage.getType(message);
-                footprint = jsonMessage.getFootprint(message);
+                type = jsonMessage.getInteger("type", message);
+                footprint = jsonMessage.getString("footprint", message);
                 entity.setType(type);
                 entity.setFootprint(footprint);
                 System.out.println("Adding incoming entity");
-                printEntitySettings();
                 node.addIncomingLinker(entity);
-                return true;
+                break;
             case EnumContentCode.INITIAL_INTERFACE_CONF:
                 System.out.println("Adding interface from: " + message);
-                type = jsonMessage.getType(message);
+                type = jsonMessage.getInteger("type", message);
                 entity.setType(type);
-                return true;
+                break;
             case EnumContentCode.SUM:
             case EnumContentCode.SUBSTRACTION:
             case EnumContentCode.MULTIPLICATION:
             case EnumContentCode.DIVISION:
-                Integer origin = jsonMessage.getOrigin(message);
+                Integer origin = jsonMessage.getInteger("origin", message);
                 System.out.println("Entity before: " + message);
+                // TODO change updateOriginMessage for general cases
                 message = jsonMessage.updateOriginMessage(EnumType.NODE, message);
                 if (origin == EnumType.NODE) {
                     System.out.println("Node: " + message);
@@ -78,7 +76,6 @@ public class NodeMessageHandler extends AbstractMessageHandler {
                 }
                 break;
         }
-        return false;
     }
 
     private void printEntitySettings() {

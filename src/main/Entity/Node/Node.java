@@ -19,7 +19,6 @@ public class Node {
     private NodeServerListener nodeServerListener;
     private Entity entity;
     private JSONMessage jsonMessage;
-    private String message;
 
     private Node() throws IOException {
         arrayListOfEntities = new ArrayList<>();
@@ -29,13 +28,12 @@ public class Node {
         createNodeListener();
         initializeNodeEntityValues();
         connectToOtherNodes();
-
         sendThisPortToOtherNodes();
 
         sendOutput();
     }
 
-    private void createNodeListener() throws IOException {
+    private void createNodeListener() {
         nodeServerListener = new NodeServerListener(this);
         nodeServerListener.start();
     }
@@ -67,37 +65,21 @@ public class Node {
         }
     }
 
-    public String getConnectNodeMessage() throws JsonProcessingException {
-        return jsonMessage.createJSONConnectNodeMessage(nodeServerListener.getLocalPort(), entity);
-    }
-
-    public void createAndAddNode(String message) throws IOException {
-        Integer portNumber = jsonMessage.getPortNumber(message);
-        Integer type = jsonMessage.getType(message);
-        String footprint = jsonMessage.getFootprint(message);
-
-
-        Socket socketToThisServer = new Socket(nodeServerListener.getHostname(), portNumber);
-        Linker linker = new Linker(socketToThisServer);
-        Entity entity = new Entity();
-
-        entity.setLinker(linker);
-        entity.setType(type);
-        entity.setFootprint(footprint);
-        addIncomingLinker(entity);
-    }
-
     public void addIncomingLinker(Entity entity) {
         arrayListOfEntities.add(entity);
     }
 
     private void sendThisPortToOtherNodes() throws JsonProcessingException {
-        String jsonPortMessage = jsonMessage.createJSONConnectNodeMessage(nodeServerListener.getLocalPort(), entity);
+        String jsonPortMessage = getConnectNodeMessage();
 
         for (Entity destinationEntity : arrayListOfEntities) {
             Linker destinationLinker = destinationEntity.getLinker();
             destinationLinker.sendMessage(jsonPortMessage);
         }
+    }
+
+    public String getConnectNodeMessage() throws JsonProcessingException {
+        return jsonMessage.createConnectNodeMessage(nodeServerListener.getLocalPort(), entity);
     }
 
     private void sendOutput() throws IOException {
