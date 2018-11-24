@@ -54,30 +54,20 @@ public class JSONMessage {
         return parsedJSONMessage;
     }
 
-    public String createConnectInterfaceMessage() {
+    public String getConnectInterfaceMessage(Entity entity) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("contentCode", EnumContentCode.INITIAL_INTERFACE_CONF);
-        objectNode.put("type", EnumType.INTERFACE);
+        objectNode.put("type", entity.getType());
+        objectNode.put("footprint", entity.getFootprint());
 
-        String parsedJSONMessage = objectNode.toString();
-
-        return parsedJSONMessage;
+        return objectNode.toString();
     }
 
-    public String createInterfaceMessage(Integer contentCode) {
+    public String createInterfaceMessage(InterfaceMessage interfaceMessage) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-
-        ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("contentCode", contentCode);
-        objectNode.put("origin", EnumType.INTERFACE);
-        objectNode.put("firstValue", 1);
-        objectNode.put("secondValue", 1);
-
-        String parsedJSONMessage = objectNode.toString();
-
-        return parsedJSONMessage;
+        return objectMapper.writeValueAsString(interfaceMessage);
     }
 
     public String updateOriginMessage(Integer origin, String message) {
