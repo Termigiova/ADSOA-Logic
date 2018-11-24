@@ -93,21 +93,37 @@ public class Node {
         }
     }
 
-    public void sendMessageToConnectedLinkers(String message) {
+    public void sendMessageToConnectedLinkers(String message) throws IOException {
         System.out.println("Number of connected linkers: " + arrayListOfEntities.size());
+        Linker destinationLinker;
         for (Entity destinationEntity : arrayListOfEntities) {
-            Linker destinationLinker = destinationEntity.getLinker();
-            destinationLinker.sendMessage(message);
-        }
-    }
-
-    public void sendMessageToNonNodeLinkers(String message) {
-        for (Entity destinationEntity : arrayListOfEntities) {
-            if (destinationEntity.getType() != EnumType.NODE) {
-                Linker destinationLinker = destinationEntity.getLinker();
+            if (messageCanBeSentToLinkers(destinationEntity, message)) {
+                destinationLinker = destinationEntity.getLinker();
                 destinationLinker.sendMessage(message);
             }
         }
+    }
+
+    public void sendMessageToNonNodeLinkers(String message) throws IOException {
+        System.out.println("Number of connected linkers: " + arrayListOfEntities.size());
+        Linker destinationLinker;
+        for (Entity destinationEntity : arrayListOfEntities) {
+            if (messageCanBeSendToNonNodeLinkers(destinationEntity, message)) {
+                destinationLinker = destinationEntity.getLinker();
+                destinationLinker.sendMessage(message);
+            }
+        }
+    }
+
+    private Boolean messageCanBeSentToLinkers(Entity destinationEntity, String message) throws IOException {
+        String originMessageFootprint = jsonMessage.getString("originFootprint", message);
+        return !destinationEntity.getFootprint().equals(originMessageFootprint);
+    }
+
+    private Boolean messageCanBeSendToNonNodeLinkers(Entity destinationEntity, String message) throws IOException {
+        String originMessageFootprint = jsonMessage.getString("originFootprint", message);
+        return      destinationEntity.getType() != EnumType.NODE
+                && !destinationEntity.getFootprint().equals(originMessageFootprint);
     }
 
     public Entity getEntity() { return entity; }
