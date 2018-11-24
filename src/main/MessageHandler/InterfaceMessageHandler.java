@@ -9,7 +9,6 @@ public class InterfaceMessageHandler extends AbstractMessageHandler {
 
     private Interface clientInterface;
     private String message;
-    private String response;
     private JSONMessage jsonMessage;
 
     public InterfaceMessageHandler(Entity entity, Interface clientInterface) {
@@ -17,17 +16,18 @@ public class InterfaceMessageHandler extends AbstractMessageHandler {
         this.entity = entity;
         jsonMessage = new JSONMessage();
 
-        sendSetTypeMessage();
+        sendFirstMessage();
+        this.start();
     }
 
-    private void sendSetTypeMessage() {
-        String jsonTypeMessage = jsonMessage.createConnectInterfaceMessage();
+    private void sendFirstMessage() {
         Linker linker = entity.getLinker();
-        linker.sendMessage(jsonTypeMessage);
+        message = jsonMessage.getConnectInterfaceMessage(entity);
+        linker.sendMessage(message);
     }
 
     public void processMessage(String message) {
-        System.out.println(message);
+        System.out.println("Interface receiving: " + message);
     }
 
 }
