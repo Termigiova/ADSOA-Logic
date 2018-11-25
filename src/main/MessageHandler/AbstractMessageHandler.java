@@ -24,7 +24,6 @@ public abstract class AbstractMessageHandler extends Thread {
         while (true) {
             try {
                 message = linker.readMessage();
-                System.out.println(message);
                 processMessage(message);
             } catch (IOException e) {
 //                e.printStackTrace();
@@ -43,7 +42,7 @@ public abstract class AbstractMessageHandler extends Thread {
         while (true) {
             try {
                 message = linker.readMessage();
-                System.out.println("First Message: " + message);
+                System.out.println("First Message");
                 JSONMessage jsonMessage = new JSONMessage();
                 Integer contentCode = jsonMessage.getInteger("contentCode", message);
                 if (contentCodeIsInitialConfiguration(contentCode)) {

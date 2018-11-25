@@ -41,7 +41,7 @@ public class NodeMessageHandler extends AbstractMessageHandler {
     public void processMessage(String message) throws IOException {
         Integer contentCode = jsonMessage.getInteger("contentCode", message);
 
-        System.out.println("Processing message: " + message);
+        System.out.println("Processing message");
         switch(contentCode) {
             case EnumContentCode.INITIAL_NODE_CONF:
                 System.out.println("Entering INITIAL_NODE_CONF");
@@ -66,7 +66,7 @@ public class NodeMessageHandler extends AbstractMessageHandler {
         String footprint = jsonMessage.getString("footprint", message);
         entity.setType(type);
         entity.setFootprint(footprint);
-        System.out.println("Adding incoming entity");
+        System.out.println("Adding incoming node");
         node.addIncomingLinker(entity);
     }
 
@@ -75,7 +75,7 @@ public class NodeMessageHandler extends AbstractMessageHandler {
         String footprint = jsonMessage.getString("footprint", message);
         entity.setType(type);
         entity.setFootprint(footprint);
-        System.out.println("Adding Incoming Entity");
+        System.out.println("Adding Incoming interface");
         node.addIncomingLinker(entity);
     }
 
@@ -84,11 +84,12 @@ public class NodeMessageHandler extends AbstractMessageHandler {
         System.out.println("Entity before: " + message);
         // TODO change updateOriginMessage for general cases
         message = jsonMessage.updateOriginMessage(EnumType.NODE, message);
+        System.out.println("Entity after : " + message);
         if (origin == EnumType.NODE) {
-            System.out.println("Sending to non node linkers: " + message);
+            System.out.println("Sending to non node linkers");
             node.sendMessageToNonNodeLinkers(message);
         } else {
-            System.out.println("Sending to all linkers: " + message);
+            System.out.println("Sending to all linkers");
             node.sendMessageToConnectedLinkers(message);
         }
     }
