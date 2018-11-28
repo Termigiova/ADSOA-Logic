@@ -35,7 +35,7 @@ public class Entity {
             MessageDigest salt = MessageDigest.getInstance("SHA-256");
             salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
             digest = bytesToHex(salt.digest());
-            this.footprint = String.valueOf(UUID.randomUUID());
+            this.footprint = String.valueOf(digest);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }

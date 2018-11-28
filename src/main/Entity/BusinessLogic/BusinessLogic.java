@@ -1,5 +1,6 @@
 package main.Entity.BusinessLogic;
 
+import main.Entity.BusinessLogic.Operations.*;
 import main.Entity.Entity;
 import main.JSONMessage.JSONMessage;
 import main.MessageHandler.BusinessLogicMessageHandler;

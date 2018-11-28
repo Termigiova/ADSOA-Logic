@@ -1,4 +1,6 @@
-package main.Entity.BusinessLogic;
+package main.Entity.BusinessLogic.Operations;
+
+import main.Entity.BusinessLogic.Operation;
 
 public class Division implements Operation {
 
