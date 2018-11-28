@@ -89,7 +89,7 @@ public class BusinessLogic {
         System.out.print("Enter a port number: ");
         String portNumber = stdIn.readLine();
 
-        BusinessLogic businessLogic = new BusinessLogic(Integer.parseInt(portNumber), SUBSTRACTION);
+        BusinessLogic businessLogic = new BusinessLogic(Integer.parseInt(portNumber), SUM);
 
     }
 

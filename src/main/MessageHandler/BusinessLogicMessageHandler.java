@@ -2,10 +2,13 @@ package main.MessageHandler;
 
 import main.Entity.BusinessLogic.BusinessLogic;
 import main.Entity.Entity;
+import main.Enum.EnumContentCode;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
 
 import java.io.IOException;
+
+import static main.Enum.EnumContentCode.*;
 
 public class BusinessLogicMessageHandler extends AbstractMessageHandler {
 
@@ -31,12 +34,21 @@ public class BusinessLogicMessageHandler extends AbstractMessageHandler {
     }
 
     void processMessage(String message) throws IOException {
-        System.out.println("BL processing: " + message);
-
         Integer contentCode = jsonMessage.getInteger("contentCode", message);
+        System.out.println("BL processing: " + message);
+        switch(contentCode) {
+            case SUM:
+            case SUBSTRACTION:
+            case MULTIPLICATION:
+            case DIVISION:
+                processOperation(contentCode, message);
+                break;
+            default:
+                System.out.println("Non defined content code, discarding message");
+        }
+    }
 
-        System.out.println("Processing message");
-
+    private void processOperation(Integer contentCode, String message) throws IOException {
         if (contentCode == entity.getType()) {
             result = businessLogic.performOperation(message);
             sendResultMessage();
