@@ -1,83 +1,95 @@
 package main.Entity.BusinessLogic;
 
-import main.Entity.AbstractEntity;
-import main.Enum.EnumContentCode;
-import main.Enum.EnumType;
+import main.Entity.Entity;
+import main.JSONMessage.JSONMessage;
+import main.MessageHandler.BusinessLogicMessageHandler;
+import main.Sockets.Linker;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-public class BusinessLogic extends AbstractEntity {
+import static main.Enum.EnumContentCode.*;
 
+public class BusinessLogic {
+
+    private Entity entity;
+    private JSONMessage jsonMessage;
+
+    private Operation operation;
     private Integer value1;
     private Integer value2;
-    private Integer result;
-    private Integer operand;
 
-    private BusinessLogic() throws IOException {
-        super();
-        setType(EnumType.BUSINESSLOGIC);
+    public BusinessLogic(Integer portNumber, Integer entityContentCode) throws IOException {
+        entity = new Entity();
+        jsonMessage = new JSONMessage();
+
+        initializeEntityValues(portNumber, entityContentCode);
+        initializeOperationType(entityContentCode);
+        initializeMessageHandler();
     }
 
-    @Override
-    public void readFromIncomingInput() throws IOException, ClassNotFoundException {
-        Object operation;
+    private void initializeEntityValues(Integer portNumber, Integer entityContentCode) throws IOException {
+        Linker linker = createLinker(portNumber);
+        this.entity.setLinker(linker);
+        this.entity.setType(entityContentCode);
+        this.entity.generateFootprint();
+    }
 
-        while (true) {
-            operation = in.readObject();
-            System.out.println("BL reading: " + Arrays.toString((Object[]) operation));
-            result = getResultFrom((Object[]) operation);
-            sendOutput();
+    private Linker createLinker(Integer portNumber) throws IOException {
+        Socket socket = new Socket(getHostname(), portNumber);
+        return new Linker(socket);
+    }
+
+    private String getHostname() {
+        String hostName = "";
+
+        try {
+            hostName = InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()).toString();
+            hostName = hostName.replace("/","");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        return hostName;
+    }
+
+    private void initializeOperationType(Integer entityContentCode) {
+        switch(entityContentCode) {
+            case SUM:
+                operation = new Sum();
+                break;
+            case SUBSTRACTION:
+                operation = new Substraction();
+                break;
+            case MULTIPLICATION:
+                operation = new Multiplication();
+                break;
+            case DIVISION:
+                operation = new Division();
+                break;
         }
     }
 
-    private Integer getResultFrom(Object[] operation) {
-        EnumContentCode enumContentCode = new EnumContentCode();
-
-        value1 = (Integer) operation[0];
-        operand = enumContentCode.getType((Integer) operation[1]);
-        value2 = (Integer) operation[2];
-
-        switch (operand) {
-            case EnumContentCode.SUM:
-                return sum(value1, value2);
-            case EnumContentCode.SUBSTRACTION:
-                return subtract(value1, value2);
-            case EnumContentCode.MULTIPLICATION:
-                return multiply(value1, value2);
-            case EnumContentCode.DIVISION:
-                return divide(value1,value2);
-            default:
-                return null;
-        }
-
+    private void initializeMessageHandler() {
+        BusinessLogicMessageHandler businessLogicMessageHandler = new BusinessLogicMessageHandler(entity, this);
     }
 
-    private Integer sum(Integer value1, Integer value2) { return (value1 + value2); }
-
-    private Integer subtract(Integer value1, Integer value2) { return (value1 - value2); }
-
-    private Integer multiply(Integer value1, Integer value2) { return (value1 * value2); }
-
-    private Integer divide(Integer value1, Integer value2) {
-        if (value2 != 0)
-            return (value1 / value2);
-        return null;
-    }
-
-    @Override
-    public void sendOutput() throws IOException {
-        System.out.println("BL sending: " + result);
-        Object[] obj = new Object[] {result};
-        out.writeObject(obj);
+    public Integer performOperation(String message) throws IOException {
+        value1 = jsonMessage.getInteger("firstValue", message);
+        value2 = jsonMessage.getInteger("secondValue", message);
+        return operation.solve(value1, value2);
     }
 
     public static void main(String[] args) throws IOException {
+        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Enter a port number: ");
+        String portNumber = stdIn.readLine();
 
-        BusinessLogic businessLogic = new BusinessLogic();
-        businessLogic.connectToPort(5001);
-        businessLogic.getInfo();
-        businessLogic.start();
+        BusinessLogic businessLogic = new BusinessLogic(Integer.parseInt(portNumber), SUBSTRACTION);
 
     }
 

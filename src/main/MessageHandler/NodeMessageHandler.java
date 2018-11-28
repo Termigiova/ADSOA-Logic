@@ -3,13 +3,13 @@ package main.MessageHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import main.Entity.Entity;
 import main.Entity.Node.Node;
-import main.Enum.EnumContentCode;
-import main.Enum.EnumType;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
 
 import java.io.IOException;
 import java.net.Socket;
+
+import static main.Enum.EnumContentCode.*;
 
 public class NodeMessageHandler extends AbstractMessageHandler {
 
@@ -43,52 +43,37 @@ public class NodeMessageHandler extends AbstractMessageHandler {
 
         System.out.println("Processing message");
         switch(contentCode) {
-            case EnumContentCode.INITIAL_NODE_CONF:
-                System.out.println("Entering INITIAL_NODE_CONF");
-                initialNodeConfHandler(message);
+            case INITIAL_ENTITY_CONF:
+                System.out.println("Entering INITIAL_ENTITY_CONF");
+                initialEntityConfHandler(message);
                 break;
-            case EnumContentCode.INITIAL_INTERFACE_CONF:
-                System.out.println("Entering INITIAL_INTERFACE_CONF");
-                initialInterfaceConfHandler(message);
-                break;
-            case EnumContentCode.SUM:
-            case EnumContentCode.SUBSTRACTION:
-            case EnumContentCode.MULTIPLICATION:
-            case EnumContentCode.DIVISION:
+            case SUM:
+            case SUBSTRACTION:
+            case MULTIPLICATION:
+            case DIVISION:
+            case RESULT:
                 System.out.println("Entering Business logic message handler");
                 businessLogicMessageHandler(message);
                 break;
         }
     }
 
-    private void initialNodeConfHandler(String message) throws IOException {
+    private void initialEntityConfHandler(String message) throws IOException {
         Integer type = jsonMessage.getInteger("type", message);
         String footprint = jsonMessage.getString("footprint", message);
         entity.setType(type);
         entity.setFootprint(footprint);
-        System.out.println("Adding incoming node");
-        node.addIncomingLinker(entity);
-    }
-
-    private void initialInterfaceConfHandler(String message) throws IOException {
-        Integer type = jsonMessage.getInteger("type", message);
-        String footprint = jsonMessage.getString("footprint", message);
-        entity.setType(type);
-        entity.setFootprint(footprint);
-        System.out.println("Adding Incoming interface");
+        System.out.println("Adding incoming entity");
         node.addIncomingLinker(entity);
     }
 
     private void businessLogicMessageHandler(String message) throws IOException {
         Integer origin = jsonMessage.getInteger("origin", message);
-        System.out.println("Entity before: " + message);
-        // TODO change updateOriginMessage for general cases
-        message = jsonMessage.updateOriginMessage(EnumType.NODE, message);
-        System.out.println("Entity after : " + message);
-        if (origin == EnumType.NODE) {
+        if (origin == NODE) {
             System.out.println("Sending to non node linkers");
             node.sendMessageToNonNodeLinkers(message);
         } else {
+            message = jsonMessage.updateOriginMessage(NODE, message);
             System.out.println("Sending to all linkers");
             node.sendMessageToConnectedLinkers(message);
         }

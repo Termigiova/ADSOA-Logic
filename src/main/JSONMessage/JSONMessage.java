@@ -8,10 +8,12 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import main.Entity.Entity;
-import main.Enum.EnumContentCode;
-import main.Enum.EnumType;
 
 import java.io.IOException;
+
+import static main.Enum.EnumContentCode.INITIAL_ENTITY_CONF;
+import static main.Enum.EnumContentCode.NOTDECLARED;
+import static main.Enum.EnumContentCode.RESULT;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class JSONMessage {
@@ -28,10 +30,10 @@ public class JSONMessage {
         ObjectMapper objectMapper = getObjectMapperWithModule("MessageSerializer");
 
         // Set parameters
-        header.setContentCode(EnumContentCode.NOTDECLARED);
+        header.setContentCode(NOTDECLARED);
         header.setFolio("folio");
         header.setOriginFootprint("originFootprint");
-        header.setTransmitterType(EnumType.NOTDECLARED);
+        header.setTransmitterType(NOTDECLARED);
         message.setMessage("This is a message");
 
         String parsedJSONMessage = objectMapper.writeValueAsString(this);
@@ -44,7 +46,7 @@ public class JSONMessage {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("contentCode", EnumContentCode.INITIAL_NODE_CONF);
+        objectNode.put("contentCode", INITIAL_ENTITY_CONF);
         objectNode.put("portNumber", portNumber);
         objectNode.put("type", entity.getType());
         objectNode.put("footprint", entity.getFootprint());
@@ -54,11 +56,11 @@ public class JSONMessage {
         return parsedJSONMessage;
     }
 
-    public String getConnectInterfaceMessage(Entity entity) {
+    public String createEntityConnectionMessage(Entity entity) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("contentCode", EnumContentCode.INITIAL_INTERFACE_CONF);
+        objectNode.put("contentCode", INITIAL_ENTITY_CONF);
         objectNode.put("type", entity.getType());
         objectNode.put("footprint", entity.getFootprint());
 
@@ -68,6 +70,18 @@ public class JSONMessage {
     public String createInterfaceMessage(InterfaceMessage interfaceMessage) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(interfaceMessage);
+    }
+
+    public String createResultMessage(Entity entity, Integer result) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("contentCode", RESULT);
+        objectNode.put("origin", entity.getType());
+        objectNode.put("originFootprint", entity.getFootprint());
+        objectNode.put("result", result);
+
+        return objectNode.toString();
     }
 
     public String updateOriginMessage(Integer origin, String message) {
@@ -116,7 +130,5 @@ public class JSONMessage {
 
         return objectMapper;
     }
-
-
 
 }

@@ -36,10 +36,4 @@ public class Linker {
         return message;
     }
 
-    public Integer getPort() { return socket.getPort(); }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
 }

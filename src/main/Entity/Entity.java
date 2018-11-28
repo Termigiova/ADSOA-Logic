@@ -1,7 +1,6 @@
 package main.Entity;
 
-import main.Enum.EnumType;
-import main.JSONMessage.Message;
+import main.Enum.EnumContentCode;
 import main.Sockets.Linker;
 
 import java.io.UnsupportedEncodingException;
@@ -26,7 +25,7 @@ public class Entity {
     public void setType(int type) { this.type = type; }
 
     public int getType() {
-        EnumType type = new EnumType();
+        EnumContentCode type = new EnumContentCode();
         return type.getType(this.type);
     }
 

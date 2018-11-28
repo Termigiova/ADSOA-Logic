@@ -1,11 +1,12 @@
 package main.MessageHandler;
 
 import main.Entity.Entity;
-import main.Enum.EnumContentCode;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
 
 import java.io.IOException;
+
+import static main.Enum.EnumContentCode.INITIAL_ENTITY_CONF;
 
 public abstract class AbstractMessageHandler extends Thread {
 
@@ -45,7 +46,7 @@ public abstract class AbstractMessageHandler extends Thread {
                 System.out.println("First Message");
                 JSONMessage jsonMessage = new JSONMessage();
                 Integer contentCode = jsonMessage.getInteger("contentCode", message);
-                if (contentCodeIsInitialConfiguration(contentCode)) {
+                if (contentCode == INITIAL_ENTITY_CONF) {
                     processMessage(message);
                     break;
                 }
@@ -55,12 +56,6 @@ public abstract class AbstractMessageHandler extends Thread {
 //                e.printStackTrace();
             }
         }
-    }
-
-    private Boolean contentCodeIsInitialConfiguration(Integer contentCode) {
-        return (contentCode == EnumContentCode.INITIAL_NODE_CONF) ||
-                (contentCode == EnumContentCode.INITIAL_INTERFACE_CONF) ||
-                (contentCode == EnumContentCode.INITIAL_OPERATION_CONF);
     }
 
     public Entity getEntity() { return entity; }

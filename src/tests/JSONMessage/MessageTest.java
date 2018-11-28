@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import main.Enum.EnumContentCode;
-import main.Enum.EnumType;
 import main.JSONMessage.JSONMessage;
 import main.JSONMessage.MessageSerializer;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ class MessageTest {
         jsonMessage.header.setContentCode(EnumContentCode.NOTDECLARED);
         jsonMessage.header.setFolio("folio");
         jsonMessage.header.setOriginFootprint("originFootprint");
-        jsonMessage.header.setTransmitterType(EnumType.NOTDECLARED);
+        jsonMessage.header.setTransmitterType(EnumContentCode.NOTDECLARED);
         jsonMessage.message.setMessage("This is a message");
 
         String parsedJSONMessage = objectMapper.writeValueAsString(jsonMessage);
@@ -42,7 +41,7 @@ class MessageTest {
 //
 //        // Create an instance of Message and set parameters
 //        JSONMessage jsonMessage = new JSONMessage();
-//        jsonMessage.header.setTransmitterType(EnumType.NOTDECLARED);
+//        jsonMessage.header.setTransmitterType(EnumEntityType.NOTDECLARED);
 //        jsonMessage.message.setMessage("This is a message");
 //
 //        String mappedJSONMessage = objectMapper.writeValueAsString(jsonMessage);

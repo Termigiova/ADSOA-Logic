@@ -2,7 +2,6 @@ package main.Entity.Interface;
 
 import main.Entity.Entity;
 import main.Enum.EnumContentCode;
-import main.Enum.EnumType;
 import main.JSONMessage.InterfaceMessage;
 import main.JSONMessage.JSONMessage;
 import main.MessageHandler.InterfaceMessageHandler;
@@ -14,6 +13,9 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import static main.Enum.EnumContentCode.INTERFACE;
+import static main.Enum.EnumContentCode.SUM;
 
 public class Interface {
 
@@ -33,7 +35,7 @@ public class Interface {
     private void initializeEntityValues(Integer portNumber) throws IOException {
         Linker linker = createLinker(portNumber);
         this.entity.setLinker(linker);
-        this.entity.setType(EnumType.INTERFACE);
+        this.entity.setType(INTERFACE);
         this.entity.generateFootprint();
     }
 
@@ -76,8 +78,8 @@ public class Interface {
 
     private InterfaceMessage createInterfaceMessage() {
         InterfaceMessage interfaceMessage = new InterfaceMessage();
-        interfaceMessage.setContentCode(EnumContentCode.SUM);
-        interfaceMessage.setOrigin(EnumType.INTERFACE);
+        interfaceMessage.setContentCode(SUM);
+        interfaceMessage.setOrigin(INTERFACE);
         interfaceMessage.setOriginFootprint(entity.getFootprint());
         interfaceMessage.setFirstValue(1);
         interfaceMessage.setSecondValue(1);

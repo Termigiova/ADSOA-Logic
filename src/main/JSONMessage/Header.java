@@ -2,7 +2,6 @@ package main.JSONMessage;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import main.Enum.EnumContentCode;
-import main.Enum.EnumType;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Header {
@@ -14,7 +13,7 @@ public class Header {
 
     Header() {
         contentCode = EnumContentCode.NOTDECLARED;
-        transmitterType = EnumType.NOTDECLARED;
+        transmitterType = EnumContentCode.NOTDECLARED;
         folio = "";
         originFootprint = "";
     }

@@ -2,6 +2,7 @@ package main.MessageHandler;
 
 import main.Entity.Entity;
 import main.Entity.Interface.Interface;
+import main.Enum.EnumContentCode;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
 
@@ -22,7 +23,7 @@ public class InterfaceMessageHandler extends AbstractMessageHandler {
 
     private void sendFirstMessage() {
         Linker linker = entity.getLinker();
-        message = jsonMessage.getConnectInterfaceMessage(entity);
+        message = jsonMessage.createEntityConnectionMessage(entity);
         linker.sendMessage(message);
     }
 

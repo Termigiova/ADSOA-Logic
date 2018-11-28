@@ -2,7 +2,7 @@ package main.Entity.Node;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import main.Entity.Entity;
-import main.Enum.EnumType;
+import main.Enum.EnumContentCode;
 import main.JSONMessage.JSONMessage;
 import main.MessageHandler.NodeMessageHandler;
 import main.Sockets.Linker;
@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import static main.Enum.EnumContentCode.NODE;
 
 public class Node {
 
@@ -41,7 +43,7 @@ public class Node {
     private void initializeNodeEntityValues() throws IOException {
         Linker linker = getNodeLinker();
         this.entity.setLinker(linker);
-        this.entity.setType(EnumType.NODE);
+        this.entity.setType(NODE);
         this.entity.generateFootprint();
     }
 
@@ -122,7 +124,7 @@ public class Node {
 
     private Boolean messageCanBeSendToNonNodeLinkers(Entity destinationEntity, String message) throws IOException {
         String originMessageFootprint = jsonMessage.getString("originFootprint", message);
-        return      destinationEntity.getType() != EnumType.NODE
+        return      destinationEntity.getType() != NODE
                 && !destinationEntity.getFootprint().equals(originMessageFootprint);
     }
 
