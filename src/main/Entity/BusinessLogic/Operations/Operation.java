@@ -1,4 +1,4 @@
-package main.Entity.BusinessLogic;
+package main.Entity.BusinessLogic.Operations;
 
 public interface Operation {
 

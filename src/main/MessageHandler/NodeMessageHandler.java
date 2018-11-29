@@ -5,6 +5,7 @@ import main.Entity.Entity;
 import main.Entity.Node.Node;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
+import main.Queue.InputQueue;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -21,6 +22,7 @@ public class NodeMessageHandler extends AbstractMessageHandler {
         this.node = node;
         entity = new Entity();
         jsonMessage = new JSONMessage();
+        inputQueue = new InputQueue(this);
 
         initializeEntityValues(socket);
         sendFirstMessage();

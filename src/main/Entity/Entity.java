@@ -2,6 +2,7 @@ package main.Entity;
 
 import main.Enum.EnumContentCode;
 import main.Sockets.Linker;
+import main.Utilities.Footprint;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -29,26 +30,16 @@ public class Entity {
         return type.getType(this.type);
     }
 
-    public void generateFootprint() {
-        String digest = null;
-        try {
-            MessageDigest salt = MessageDigest.getInstance("SHA-256");
-            salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
-            digest = bytesToHex(salt.digest());
-            this.footprint = String.valueOf(digest);
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        setFootprint(digest);
-
+    public String getFootprint() {
+        return footprint;
     }
 
     public void setFootprint(String footprint) {
         this.footprint = footprint;
     }
 
-    public String getFootprint() {
-        return footprint;
+    public void generateFootprint() {
+        Footprint footprint = new Footprint();
+        this.footprint = footprint.generateFootprint();
     }
 }

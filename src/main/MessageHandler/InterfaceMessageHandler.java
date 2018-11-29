@@ -2,9 +2,9 @@ package main.MessageHandler;
 
 import main.Entity.Entity;
 import main.Entity.Interface.Interface;
-import main.Enum.EnumContentCode;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
+import main.Queue.InputQueue;
 
 public class InterfaceMessageHandler extends AbstractMessageHandler {
 
@@ -16,6 +16,7 @@ public class InterfaceMessageHandler extends AbstractMessageHandler {
         this.clientInterface = clientInterface;
         this.entity = entity;
         jsonMessage = new JSONMessage();
+        inputQueue = new InputQueue(this);
 
         sendFirstMessage();
         this.start();

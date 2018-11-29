@@ -1,7 +1,6 @@
 package main.Entity.Interface;
 
 import main.Entity.Entity;
-import main.Enum.EnumContentCode;
 import main.JSONMessage.InterfaceMessage;
 import main.JSONMessage.JSONMessage;
 import main.MessageHandler.InterfaceMessageHandler;

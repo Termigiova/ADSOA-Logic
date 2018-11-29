@@ -2,7 +2,6 @@ package main.Entity.Node;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import main.Entity.Entity;
-import main.Enum.EnumContentCode;
 import main.JSONMessage.JSONMessage;
 import main.MessageHandler.NodeMessageHandler;
 import main.Sockets.Linker;
@@ -31,8 +30,6 @@ public class Node {
         initializeNodeEntityValues();
         connectToOtherNodes();
         sendThisPortToOtherNodes();
-
-        sendOutput();
     }
 
     private void createNodeListener() {
@@ -82,17 +79,6 @@ public class Node {
 
     public String getConnectNodeMessage() throws JsonProcessingException {
         return jsonMessage.createConnectNodeMessage(nodeServerListener.getLocalPort(), entity);
-    }
-
-    private void sendOutput() throws IOException {
-        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        String message;
-
-        while(true) {
-            message = stdIn.readLine();
-            if (message != null)
-                sendMessageToConnectedLinkers(message);
-        }
     }
 
     public void sendMessageToConnectedLinkers(String message) throws IOException {

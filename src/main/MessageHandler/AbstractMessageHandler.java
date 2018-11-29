@@ -3,14 +3,16 @@ package main.MessageHandler;
 import main.Entity.Entity;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
+import main.Queue.InputQueue;
 
 import java.io.IOException;
 
 import static main.Enum.EnumContentCode.INITIAL_ENTITY_CONF;
 
-public abstract class AbstractMessageHandler extends Thread {
+public abstract class AbstractMessageHandler extends Thread implements MessageHandler{
 
     protected Entity entity;
+    protected InputQueue inputQueue;
 
     @Override
     public void run() {
@@ -25,7 +27,7 @@ public abstract class AbstractMessageHandler extends Thread {
         while (true) {
             try {
                 message = linker.readMessage();
-                processMessage(message);
+                addMessageToQueue(message);
             } catch (IOException e) {
 //                e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -34,7 +36,11 @@ public abstract class AbstractMessageHandler extends Thread {
         }
     }
 
-    abstract void processMessage(String message) throws IOException;
+    public void addMessageToQueue(String message) {
+        inputQueue.addMessage(message);
+    }
+
+    public abstract void processMessage(String message) throws IOException;
 
     private void receiveFirstMessageToGetEntityInformation() {
         String message;
@@ -43,7 +49,6 @@ public abstract class AbstractMessageHandler extends Thread {
         while (true) {
             try {
                 message = linker.readMessage();
-                System.out.println("First Message");
                 JSONMessage jsonMessage = new JSONMessage();
                 Integer contentCode = jsonMessage.getInteger("contentCode", message);
                 if (contentCode == INITIAL_ENTITY_CONF) {

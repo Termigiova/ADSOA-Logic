@@ -2,9 +2,9 @@ package main.MessageHandler;
 
 import main.Entity.BusinessLogic.BusinessLogic;
 import main.Entity.Entity;
-import main.Enum.EnumContentCode;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
+import main.Queue.InputQueue;
 
 import java.io.IOException;
 
@@ -22,6 +22,7 @@ public class BusinessLogicMessageHandler extends AbstractMessageHandler {
         this.businessLogic = businessLogic;
         this.entity = entity;
         jsonMessage = new JSONMessage();
+        inputQueue = new InputQueue(this);
 
         sendFirstMessage();
         this.start();
@@ -33,7 +34,7 @@ public class BusinessLogicMessageHandler extends AbstractMessageHandler {
         linker.sendMessage(message);
     }
 
-    void processMessage(String message) throws IOException {
+    public void processMessage(String message) throws IOException {
         Integer contentCode = jsonMessage.getInteger("contentCode", message);
         System.out.println("BL processing: " + message);
         switch(contentCode) {

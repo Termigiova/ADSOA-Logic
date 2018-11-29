@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import main.Entity.Entity;
+import main.Utilities.Footprint;
 
 import java.io.IOException;
 
@@ -74,11 +75,13 @@ public class JSONMessage {
 
     public String createResultMessage(Entity entity, Integer result) {
         ObjectMapper objectMapper = new ObjectMapper();
+        Footprint footprint = new Footprint();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("contentCode", RESULT);
         objectNode.put("origin", entity.getType());
         objectNode.put("originFootprint", entity.getFootprint());
+        objectNode.put("receiptAcknowledgment", footprint.generateFootprint());
         objectNode.put("result", result);
 
         return objectNode.toString();

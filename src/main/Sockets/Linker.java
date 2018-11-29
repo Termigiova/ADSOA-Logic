@@ -23,7 +23,7 @@ public class Linker {
 
     public void sendMessage(String message) {
         try {
-            System.out.println("Sending message: " + message);
+//            System.out.println("Sending message: " + message);
             out.writeObject(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,7 +32,7 @@ public class Linker {
 
     public String readMessage() throws IOException, ClassNotFoundException {
         String message = (String) in.readObject();
-        System.out.println("Receiving message: " + message);
+//        System.out.println("Receiving message: " + message);
         return message;
     }
 
