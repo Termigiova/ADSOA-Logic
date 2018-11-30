@@ -73,15 +73,14 @@ public class JSONMessage {
         return objectMapper.writeValueAsString(interfaceMessage);
     }
 
-    public String createResultMessage(Entity entity, Integer result) {
+    public String createResultMessage(Entity entity, Integer result, String receiptAcknowledgment) {
         ObjectMapper objectMapper = new ObjectMapper();
-        Footprint footprint = new Footprint();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("contentCode", RESULT);
         objectNode.put("origin", entity.getType());
         objectNode.put("originFootprint", entity.getFootprint());
-        objectNode.put("receiptAcknowledgment", footprint.generateFootprint());
+        objectNode.put("receiptAcknowledgment", receiptAcknowledgment);
         objectNode.put("result", result);
 
         return objectNode.toString();

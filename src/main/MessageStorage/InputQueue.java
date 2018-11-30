@@ -1,4 +1,4 @@
-package main.Queue;
+package main.MessageStorage;
 
 import main.MessageHandler.MessageHandler;
 
@@ -22,7 +22,7 @@ public class InputQueue extends Thread {
         while(true) {
             try {
                 checkMessages();
-                Thread.sleep(5000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -40,12 +40,12 @@ public class InputQueue extends Thread {
     }
 
     public void addMessage(String message) {
-        System.out.println("Input Queue Adding " + message);
+        System.out.println("Input MessageStorage Adding " + message);
         queue.add(message);
     }
 
     public static void main(String args[]) {
-//        Queue inputQueue = new Queue();
+//        MessageStorage inputQueue = new MessageStorage();
 //        for (int i = 0; i < 5; i++) {
 //            inputQueue.addMessage("String " + i);
 //        }

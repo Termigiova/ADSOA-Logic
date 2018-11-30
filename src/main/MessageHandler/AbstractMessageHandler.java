@@ -3,7 +3,7 @@ package main.MessageHandler;
 import main.Entity.Entity;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
-import main.Queue.InputQueue;
+import main.MessageStorage.InputQueue;
 
 import java.io.IOException;
 

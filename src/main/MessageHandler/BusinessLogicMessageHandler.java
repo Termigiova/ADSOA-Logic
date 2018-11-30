@@ -4,7 +4,7 @@ import main.Entity.BusinessLogic.BusinessLogic;
 import main.Entity.Entity;
 import main.JSONMessage.JSONMessage;
 import main.Sockets.Linker;
-import main.Queue.InputQueue;
+import main.MessageStorage.InputQueue;
 
 import java.io.IOException;
 
@@ -17,6 +17,7 @@ public class BusinessLogicMessageHandler extends AbstractMessageHandler {
     private String message;
 
     private Integer result;
+    private String receiptAcknowledgment;
 
     public BusinessLogicMessageHandler(Entity entity, BusinessLogic businessLogic) {
         this.businessLogic = businessLogic;
@@ -52,6 +53,7 @@ public class BusinessLogicMessageHandler extends AbstractMessageHandler {
     private void processOperation(Integer contentCode, String message) throws IOException {
         if (contentCode == entity.getType()) {
             result = businessLogic.performOperation(message);
+            receiptAcknowledgment = jsonMessage.getString("receiptAcknowledgment", message);
             sendResultMessage();
         } else {
             System.out.println("Discarding message due to different content code");
@@ -60,7 +62,7 @@ public class BusinessLogicMessageHandler extends AbstractMessageHandler {
 
     private void sendResultMessage() {
         Linker linker = entity.getLinker();
-        message = jsonMessage.createResultMessage(entity, result);
+        message = jsonMessage.createResultMessage(entity, result, receiptAcknowledgment);
         linker.sendMessage(String.valueOf(message));
     }
 }

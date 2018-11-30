@@ -5,6 +5,7 @@ import main.JSONMessage.InterfaceMessage;
 import main.JSONMessage.JSONMessage;
 import main.MessageHandler.InterfaceMessageHandler;
 import main.Sockets.Linker;
+import main.Utilities.Footprint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,19 +78,23 @@ public class Interface {
 
     private InterfaceMessage createInterfaceMessage() {
         InterfaceMessage interfaceMessage = new InterfaceMessage();
+        Footprint footprint = new Footprint();
         interfaceMessage.setContentCode(SUM);
         interfaceMessage.setOrigin(INTERFACE);
         interfaceMessage.setOriginFootprint(entity.getFootprint());
         interfaceMessage.setFirstValue(1);
         interfaceMessage.setSecondValue(1);
+        interfaceMessage.setReceiptAcknowledgment(footprint.generateFootprint());
         return interfaceMessage;
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Enter a port number: ");
-        String portNumber = stdIn.readLine();
+        Integer portNumber = Integer.valueOf(stdIn.readLine());
 
-        Interface client = new Interface(Integer.parseInt(portNumber));
+//        Integer portNumber = Integer.valueOf(args[0]);
+
+        Interface client = new Interface(portNumber);
     }
 }

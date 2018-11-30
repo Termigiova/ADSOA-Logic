@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Class-Path: jackson-core-2.9.7.jar junit-jupiter-api-5.0.0.jar apiguar
+ dian-api-1.0.0.jar opentest4j-1.0.0.jar junit-platform-commons-1.0.0.
+ jar commons-io-2.6.jar jackson-annotations-2.9.7.jar jsonassert-1.5.0
+ .jar android-json-0.0.20131108.vaadin1.jar json-20151123.jar jackson-
+ databind-2.9.7.jar jackson-annotations-2.9.0.jar jackson-core-2.9.7.j
+ ar
+Main-Class: main.Entity.Interface.Interface
+

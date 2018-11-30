@@ -88,9 +88,20 @@ public class BusinessLogic {
     public static void main(String[] args) throws IOException {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Enter a port number: ");
-        String portNumber = stdIn.readLine();
+        Integer portNumber = Integer.valueOf(stdIn.readLine());
+        System.out.println("Enter a entity type");
+        System.out.println("3 - SUM");
+        System.out.println("4 - SUBSTRACTION");
+        System.out.println("5 - MULTIPLICATION");
+        System.out.println("6 - DIVISION");
+        Integer entityType = Integer.valueOf(stdIn.readLine());
 
-        BusinessLogic businessLogic = new BusinessLogic(Integer.parseInt(portNumber), SUM);
+//        Integer portNumber = Integer.valueOf(args[0]);
+//        Integer entityType = Integer.valueOf(args[1]);
+//        System.out.println("Port number " + portNumber);
+//        System.out.println("Entity type " + entityType);
+
+        BusinessLogic businessLogic = new BusinessLogic(portNumber, entityType);
 
     }
 

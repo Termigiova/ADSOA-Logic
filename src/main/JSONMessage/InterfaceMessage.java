@@ -7,6 +7,7 @@ public class InterfaceMessage {
     private Integer firstValue;
     private Integer secondValue;
     private String originFootprint;
+    private String receiptAcknowledgment;
 
     public Integer getContentCode() {
         return contentCode;
@@ -46,5 +47,13 @@ public class InterfaceMessage {
 
     public void setSecondValue(Integer secondValue) {
         this.secondValue = secondValue;
+    }
+
+    public String getReceiptAcknowledgment() {
+        return receiptAcknowledgment;
+    }
+
+    public void setReceiptAcknowledgment(String receiptAcknowledgment) {
+        this.receiptAcknowledgment = receiptAcknowledgment;
     }
 }
